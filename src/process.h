@@ -5,10 +5,15 @@
 ** ACCOUNTING INFORMATION(CPU Burst time, real time, IO time etc)
 */
 
-#include <stdio.h>
+
 
 #ifndef __PROCESS
 #define __PROCESS
+
+#define MAXBURST 100
+#define MAXARRIVAL  100
+#define MAXPRIORITY 100
+#define MAXPROCESS 100
 
 typedef struct pcb_t  // process control block
 {
@@ -28,6 +33,9 @@ initrandparray(pcb_t pcb[], int len);
 
 int
 allcomplete(pcb_t* parray, int process_n);
+
+int*
+arrivedp(pcb_t parray[], int p_n, int i);
 
 void
 printparray(pcb_t pcb[], int len);

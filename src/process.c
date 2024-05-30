@@ -1,10 +1,9 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "./process.h"
 
-#define MAXBURST 100
-#define MAXARRIVAL  100
-#define MAXPRIORITY 100
+
 
 
 
@@ -25,29 +24,46 @@ initrandparray(pcb_t pcb[], int len)
     }
 }
 
+// TODO initialize according to some determined table()
 
 int
-allcomplete(pcb_t* parray, int process_n)
+allcomplete(pcb_t* parray, int p_n)
 {
     int allcomplete = 1;
-    for (int i = 0; i < process_n; i++) {
+    for (int i = 0; i < p_n; i++) {
         allcomplete = allcomplete && parray[i].completion;
     }
     return allcomplete;
 }
 
-// TODO initialize according to some determined table()
 
-void
-printparray(pcb_t pcb[], int len)
+
+
+
+int*
+arrivedp(pcb_t parray[], int p_n, int i)
 {
+    int arrivedpid[MAXPROCESS];
     int i;
-    for (i=0;i<len;i++) {
-        printf("pid:%d\npriority:%d\n", pcb[i].pid, pcb[i].priority);
+    for (i = 0; i < p_n; i++) {
+        if (parray[i].arrival == t) {
+            arrivedpid[i] = parray[i].pid;
+        }
     }
+    i++;
+    arrivedpid[i] = -1;  // cap arrivedpid
+
+    return arrivedpid;
 }
 
-
+void
+printparray(pcb_t parray[], int p_n)
+{
+    int i;
+    for (i=0;i<p_n;i++) {
+        printf("pid:%d\npriority:%d\n", parray[i].pid, parray[i].priority);
+    }
+}
 
 
 // void run_process(pcb_t* pcb,unsigned int runtime){
