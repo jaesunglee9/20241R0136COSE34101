@@ -164,7 +164,7 @@ findminpriority (ll_t* ll)
 }
 
 void
-display(ll_t* ll)
+displayll(ll_t* ll)
 {
     if (isempty(ll)) {
         printf("is empty\n");

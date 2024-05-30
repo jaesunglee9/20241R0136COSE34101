@@ -54,6 +54,6 @@ int
 findminpriority(ll_t* ll);
 
 void
-display(ll_t* ll);
+displayll(ll_t* ll);
 
 #endif
