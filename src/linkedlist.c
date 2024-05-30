@@ -163,6 +163,23 @@ findminpriority (ll_t* ll)
     return pid;
 }
 
+void
+display(ll_t* ll)
+{
+    if (isempty(ll)) {
+        printf("is empty\n");
+        return;
+    }
+
+    node_t* current = ll->head
+    while (current != NULL) {
+        printf("Process ID: %d, Priority: %d\n",
+               current->pcb->pid,
+               current->pcb->priority);
+        current = current->next;
+    }
+}
+
 
 
 
