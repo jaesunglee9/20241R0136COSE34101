@@ -32,6 +32,9 @@ createnode(pcb_t* pcb);
 int
 isempty(ll_t* ll);
 
+int
+iscomplete(ll_t* ll, pid);
+
 void
 insertnode(ll_t* ll, pcb_t* pcb);
 

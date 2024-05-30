@@ -108,7 +108,7 @@ findminarrival (ll_t* ll)
     int min_arrival_time = INT_MAX;
 
     if (isempty(ll)) {
-        return -1;  // isempty
+        return 0;  // isempty
     }
     node_t* current = ll->head
     while (current != NULL) {
@@ -128,7 +128,7 @@ findminremaining (ll_t* ll)
     int min_remaining = INT_MAX;
 
     if (isempty(ll)) {
-        return -1;  // isempty
+        return 0;  // isempty
     }
     node_t* current = ll->head
     while (current != NULL) {
@@ -150,7 +150,7 @@ findminpriority (ll_t* ll)
     int min_priority = INT_MAX;
 
     if (isempty(ll)) {
-        return -1;  // isempty
+        return 0;  // isempty
     }
     node_t* current = ll->head
     while (current != NULL) {
