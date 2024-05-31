@@ -16,7 +16,7 @@ simulate(cpu_t* cpu, int algo, pcb_t* pcb, int p_n)
 void
 run(cpu_t* cpu, int pid, int t, pcb_t* pcb, int p_n)
 {
-    cpu->quantum[t] = pid;
+    cpu->time[t] = pid;
     for (int i = 0;i < p_n; i++) {
         if (pcb[i].pid == pid) {
             pcb[i].cpu_remaining -= 1;

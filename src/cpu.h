@@ -14,7 +14,7 @@
 
 typedef struct cpu_t
 {
-    int quantum[MAXRUN];
+    int time[MAXRUN];
 } cpu_t;
 
 void
