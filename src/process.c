@@ -61,9 +61,11 @@ displayparray(pcb_t parray[], int p_n)
 {
     int i;
     for (i=0;i<p_n;i++) {
-        printf("pid:%d, priority:%d, completion:%d\n",
+        printf("pid:%d, priority:%d, burst:%d, remaining: %d, completion:%d\n",
                parray[i].pid,
                parray[i].priority,
+               parray[i].cpu_burst,
+               parray[i].cpu_remaining,
                parray[i].completion);
     }
 }
