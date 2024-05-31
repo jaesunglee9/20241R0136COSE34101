@@ -1,7 +1,7 @@
+#include "./process.h"
+
 #ifndef __LL
 #define __LL
-
-#include "./process.h"
 
 #define ARRIVAL 1
 #define REMAINING 2
@@ -15,7 +15,7 @@
 typedef struct node_t
 {
     pcb_t* pcb;
-    node_t* next;
+    struct node_t* next;
 } node_t;
 
 typedef struct ll_t
@@ -27,18 +27,22 @@ ll_t*
 createll();
 
 node_t*
-createnode(pcb_t* pcb);
+createnode (pcb_t* parray, int pid);
 
 int
 isempty(ll_t* ll);
 
-int
-iscomplete(ll_t* ll, pid);
+void
+insertpcb (ll_t* ll, pcb_t* parray, int pid);
 
 void
-insertnode(ll_t* ll, pcb_t* pcb);
+insertnode (ll_t* ll, node_t* node);
 
-int
+void
+movenode (ll_t* from, ll_t* to, int pid);
+
+
+node_t*
 deletenode(ll_t* ll, int pid);
 
 int

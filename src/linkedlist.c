@@ -1,4 +1,7 @@
- 
+#include <stdlib.h>
+#include <stdio.h>
+#include <limits.h>
+
 #include "linkedlist.h"
 
 ll_t*
@@ -10,10 +13,10 @@ createll ()
 }
 
 node_t*
-createnode (pcb_t* pcb)
+createnode (pcb_t* parray, int pid)
 {
     node_t* new = (node_t*) malloc (sizeof (node_t));
-    new->pcb = pcb;
+    new->pcb = &parray[pid-1];
     new->next = NULL;
     return new;
 }
@@ -29,42 +32,31 @@ isempty(ll_t* ll)
     return 0;
 }
 
-int
-iscomplete(ll_t* ll, pid)
+void
+insertpcb (ll_t* ll, pcb_t* parray, int pid)
 {
-    node_t* current = ll->head;
-    while (current != NULL) {
-        if (current->pcb->pid == pid) {
-            if (current->pcb->cpu_remaining == 0) {
-                current->pcb->completion = 1;
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-        current = current->next;
-    }
-    return 0;
+    node_t* node = createnode (parray, pid);
+    insertnode(ll, node);
 }
-
 
 void
-insertnode (ll_t* ll, pcb_t* pcb)
+insertnode (ll_t* ll, node_t* node)
 {
-    node_t* node = createnode (pcb);
-    if (isempty(ll)) {
-        ll->head = node;
-    } else {
-        ll->head->next = node;
-    }
+    node->next = ll->head;
+    ll->head = node;
 }
 
-int
+void
+movenode (ll_t* from, ll_t* to, int pid)
+{
+    node_t* current = deletenode(from, pid);
+    insertnode(to, current);
+}
+
+
+node_t*
 deletenode (ll_t* ll, int pid)
 {
-    if (isempty(ll)) {
-        return -1;  // is empty
-    }
     node_t* current = ll->head;
     node_t* previous = NULL;
 
@@ -75,27 +67,28 @@ deletenode (ll_t* ll, int pid)
             } else {
                 previous->next = current->next;
             }
-            free(current);
-            return 0;  // successfully deleted
+            return current;  // successfully deleted
         }
         previous = current;
         current = current->next;
     }
-    return -1;  // no such node found
 }
 
 int
 findmin(ll_t* ll, int find_flag) {
     int pid;
-    switch find_flag {
+    switch (find_flag) {
         case ARRIVAL:
-            pid = findminarrival (ll_t* ll);
+            pid = findminarrival (ll);
             break;
         case REMAINING:
-            pid = findminremaining (ll_t* ll);
+            pid = findminremaining (ll);
             break;
         case PRIORITY:
-            pid = findminpriority (ll_t* ll);
+            pid = findminpriority (ll);
+            break;
+        default:
+            pid = -1;
             break;
     }
     return pid;
@@ -110,7 +103,7 @@ findminarrival (ll_t* ll)
     if (isempty(ll)) {
         return 0;  // isempty
     }
-    node_t* current = ll->head
+    node_t* current = ll->head;
     while (current != NULL) {
         if (current->pcb->arrival < min_arrival_time) {
             pid = current->pcb->pid;
@@ -130,7 +123,7 @@ findminremaining (ll_t* ll)
     if (isempty(ll)) {
         return 0;  // isempty
     }
-    node_t* current = ll->head
+    node_t* current = ll->head;
     while (current != NULL) {
         if (current->pcb->cpu_remaining < min_remaining) {
             pid = current->pcb->pid;
@@ -152,7 +145,7 @@ findminpriority (ll_t* ll)
     if (isempty(ll)) {
         return 0;  // isempty
     }
-    node_t* current = ll->head
+    node_t* current = ll->head;
     while (current != NULL) {
         if (current->pcb->priority < min_priority) {
             pid = current->pcb->pid;
@@ -171,11 +164,15 @@ displayll(ll_t* ll)
         return;
     }
 
-    node_t* current = ll->head
+    node_t* current = ll->head;
     while (current != NULL) {
-        printf("Process ID: %d, Priority: %d\n",
+        printf("Process ID: %d, Priority: %d, Arrival: %d, Burst: %d, Remaining: %d, Completion: %d\n",
                current->pcb->pid,
-               current->pcb->priority);
+               current->pcb->priority,
+               current->pcb->arrival,
+               current->pcb->cpu_burst,
+               current->pcb->cpu_remaining,
+               current->pcb->completion);
         current = current->next;
     }
 }
