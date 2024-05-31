@@ -32,13 +32,16 @@ void
 initrandparray(pcb_t pcb[], int len);
 
 int
-allcomplete(pcb_t* parray, int process_n);
+iscomplete(pcb_t* parray, int pid);
 
-int*
-arrivedp(pcb_t parray[], int p_n, int i);
+int
+allcomplete(pcb_t* parray, int p_n);
 
 void
-printparray(pcb_t pcb[], int len);
+resetp(pcb_t* parray, int p_n);
+
+void
+displayparray(pcb_t pcb[], int len);
 
 #endif
 

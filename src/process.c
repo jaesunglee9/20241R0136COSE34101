@@ -18,7 +18,7 @@ initrandparray(pcb_t pcb[], int len)
 
         pcb[i].arrival = rand()%MAXARRIVAL;
         pcb[i].cpu_burst = rand()%MAXBURST;
-        pcb[i].cpu_remaining = pcb->cpu_burst;
+        pcb[i].cpu_remaining = pcb[i].cpu_burst;
 
         pcb->completion = 0;
     }
@@ -27,54 +27,47 @@ initrandparray(pcb_t pcb[], int len)
 // TODO initialize according to some determined table()
 
 int
+iscomplete(pcb_t* parray, int pid)
+{
+    int i = pid - 1;  // index and pid differ by 1
+    if (parray[i].cpu_remaining == 0) {
+        parray[i].completion = 1;
+        return parray[i].completion;
+    }
+    return parray[i].completion;
+}
+
+int
 allcomplete(pcb_t* parray, int p_n)
 {
     int allcomplete = 1;
     for (int i = 0; i < p_n; i++) {
-        allcomplete = allcomplete && parray[i].completion;
+        allcomplete = allcomplete && iscomplete(parray, i+1);
     }
     return allcomplete;
 }
 
-
-
-
-
-int*
-arrivedp(pcb_t parray[], int p_n, int i)
+void
+resetp(pcb_t* parray, int p_n)
 {
-    int arrivedpid[MAXPROCESS];
-    int i;
-    for (i = 0; i < p_n; i++) {
-        if (parray[i].arrival == t) {
-            arrivedpid[i] = parray[i].pid;
-        }
+    for (int i = 0; i < p_n; i++) {
+        parray[i].cpu_remaining = parray[i].cpu_burst;
+        parray[i].completion = 0;
     }
-    i++;
-    arrivedpid[i] = -1;  // cap arrivedpid
-
-    return arrivedpid;
 }
 
 void
-printparray(pcb_t parray[], int p_n)
+displayparray(pcb_t parray[], int p_n)
 {
     int i;
     for (i=0;i<p_n;i++) {
-        printf("pid:%d\npriority:%d\n", parray[i].pid, parray[i].priority);
+        printf("pid:%d, priority:%d, completion:%d\n",
+               parray[i].pid,
+               parray[i].priority,
+               parray[i].completion);
     }
 }
 
-
-// void run_process(pcb_t* pcb,unsigned int runtime){
-//     pcb->cpu_remaining -= runtime;
-//     return;
-// }
-
 // I am not sure we require io burst in cpu simulation.
 
-// void del_process (pcb_t* process) {
-//     free(process);
-// }
-//
 
