@@ -68,12 +68,6 @@ fcfs(cpu_t* cpu, pcb_t* parray, int p_n)
         }
 
 
-        printf("waitq ll:\n");
-        displayll(waitq);
-        printf("readyq ll:\n");
-        displayll(readyq);
-        printf("time: %d\n", t);
-
         t++;
     }
     run(cpu, -1, t, parray, p_n);  // cap cpu
