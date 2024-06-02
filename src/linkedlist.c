@@ -47,6 +47,15 @@ insertnode (ll_t* ll, node_t* node)
 }
 
 void
+insertnodetail(ll_t* ll, node_t* node) {
+    node_t* current = ll->head;
+    while (current->next != NULL) {
+        current->next;
+    }
+    current->next = node;
+}
+
+void
 movenode (ll_t* from, ll_t* to, int pid)
 {
     node_t* current = deletenode(from, pid);
