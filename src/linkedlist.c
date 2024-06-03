@@ -40,26 +40,54 @@ insertpcb (ll_t* ll, pcb_t* parray, int pid)
 }
 
 void
-insertnode (ll_t* ll, node_t* node)
+insertnode (ll_t* ll, node_t* node)  // insert node to head
 {
     node->next = ll->head;
     ll->head = node;
 }
 
+
 void
-insertnodetail(ll_t* ll, node_t* node) {
+insertnodehead (ll_t* ll, node_t* node)
+{
+    node->next = ll->head;
+    ll->head = node;
+}
+
+
+void
+insertnodetail(ll_t* ll, node_t* node)
+{
+    if (ll->head == NULL) {
+        ll->head = node;
+        node->next = NULL;
+        return;
+    }
+
     node_t* current = ll->head;
     while (current->next != NULL) {
-        current->next;
+        current = current->next;
     }
+
     current->next = node;
+    node->next = NULL;
 }
+
+
+
 
 void
 movenode (ll_t* from, ll_t* to, int pid)
 {
     node_t* current = deletenode(from, pid);
     insertnode(to, current);
+}
+
+void
+movenodetail (ll_t* from, ll_t* to, int pid)
+{
+    node_t* current = deletenode(from, pid);
+    insertnodetail(to, current);
 }
 
 
@@ -81,6 +109,24 @@ deletenode (ll_t* ll, int pid)
         previous = current;
         current = current->next;
     }
+}
+
+node_t*
+deletenodehead (ll_t* ll)
+{
+    node_t* node = ll->head;
+    ll->head = ll->head->next;
+    return node;
+}
+
+int
+headpid(ll_t* ll)
+{
+    if (ll->head == NULL) {
+        return 0;
+    }
+
+    return ll->head->pcb->pid;
 }
 
 int

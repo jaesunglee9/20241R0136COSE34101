@@ -39,11 +39,24 @@ void
 insertnode (ll_t* ll, node_t* node);
 
 void
+insertnodetail(ll_t* ll, node_t* node);
+
+void
 movenode (ll_t* from, ll_t* to, int pid);
+
+
+void
+movenodetail (ll_t* from, ll_t* to, int pid);
 
 
 node_t*
 deletenode(ll_t* ll, int pid);
+
+node_t*
+deletenodehead (ll_t* ll);
+
+int
+headpid(ll_t* ll);
 
 int
 findmin(ll_t* ll, int find_flag);

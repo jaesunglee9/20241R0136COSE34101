@@ -25,6 +25,10 @@ typedef struct pcb_t  // process control block
 	int cpu_burst;
 	int cpu_remaining;
 
+	int completion_time;
+	int turnaround_time;
+	int waiting_time;
+
 	int completion;
 } pcb_t;
 
@@ -32,7 +36,7 @@ void
 initrandparray(pcb_t pcb[], int len);
 
 int
-iscomplete(pcb_t* parray, int pid);
+iscomplete(pcb_t* parray, int pid, int t);
 
 int
 allcomplete(pcb_t* parray, int p_n);

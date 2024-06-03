@@ -6,41 +6,78 @@
 int
 main(int argc, char *argv[])
 {
-    int process_n = atoi(argv[1]);
+    int p_n = atoi(argv[1]);  // process number
 
-    pcb_t* pcb = (pcb_t*)malloc(sizeof(pcb_t) * process_n);
+    pcb_t* pcb = (pcb_t*)malloc(sizeof(pcb_t) * p_n);
+    initrandparray(parray, p_n);
+    displayparray(parray, p_n);
 
-  /* CPU architecture
-  ** CLOCK (CURRENT TIME)
-  ** RECORD(LOG) -- logs are there to let us understand what cpu is doing.
-  ** scheduling algorithm
-  ** current_process
-  ** ALGORITHM
-  ** Process queue
-  ** cpu pointer
-  ** enqueue
-  ** scheduling function ????
-  */
+    /* FCFS */
+    // init
+    resetp(parray, p_n);
+    cpu_t* cpu_fcfsf = (cpu_t*) malloc (sizeof(cpu_t));
 
-  /* Evaluation function
-  ** Display_times()
-  ** Display_gantt()
-  */
+    simulate(cpu_fcfsf, NPSJF, parray, p_n);  // run
 
-  /* Utility functions
-  **
-  */
+    gantt_t* gantt_fcfs = creategantt(cpu_fcfsf);  //eval
+    displaygantt(gantt_fcfs);
+    displayganttchart(gantt_fcfs);
+    eval(parray, p_n)
 
-  // TODO: initialize system, which initializes needed objects
-  init_system();
-  // TODO: initialize input process to run scheduling on
-  config();
-  // TODO: simulate for all scheduling algorithms, and the results are logged to log which is separate
-  simulate(clk, js, cs, cpu, io);
+    /* NPSJF */
+    resetp(parray, p_n);
+    cpu_t* cpu_npsjf = (cpu_t*) malloc (sizeof(cpu_t));
 
-  // TODO: using the log we evaluate all algorithms and display a gantt chart.
-  evaluate(log); // Other logs
-  
-  // TODO: memory cleanup
-  return 0;
+    simulate(cpu_npsjf, NPSJF, parray, p_n);
+
+    gantt_t* gantt_npsjf = creategantt(cpu_npsjf);
+    displaygantt(gantt_npsjf);
+    displayganttchart(gantt_npsjf);
+    eval(parray, p_n);
+
+    /* PSJF */
+    resetp(parray, p_n);
+    cpu_t* cpu_psjf = (cpu_t*) malloc (sizeof(cpu_t));
+
+    simulate(cpu_psjf, PSJF, parray, p_n);
+
+    gantt_t* gantt_psjf = creategantt(cpu_psjf);
+    displaygantt(gantt_psjf);
+    displayganttchart(gantt_psjf);
+    eval(parray, p_n);
+
+    /* NPPS */
+    printf(" NPPS \n");
+    resetp(parray, process_n);
+    cpu_t* cpu_npps = (cpu_t*) malloc (sizeof(cpu_t));
+
+    simulate(cpu_npps, NPPS, parray, process_n);
+
+    gantt_t* gantt_npps = creategantt(cpu_npps);
+    displaygantt(gantt_npps);
+    displayganttchart(gantt_npps);
+    printf("\n");
+    eval(parray, process_n);
+
+    /* PPS */
+    printf(" PPS \n");
+    resetp(parray, process_n);
+    cpu_t* cpu_pps = (cpu_t*) malloc (sizeof(cpu_t));
+
+    simulate(cpu_pps, PPS, parray, process_n);
+
+    gantt_t* gantt_pps = creategantt(cpu_pps);
+    displaygantt(gantt_pps);
+    displayganttchart(gantt_pps);
+    printf("\n");
+    eval(parray, process_n);
+
+
+    // TODO: memory cleanup
+    free(gantt_fcfs);
+    free(gantt_npsjf);
+    free(gantt_psjf);
+    free(gantt_npps);
+    free(gantt_pps);
+    return 0;
 }

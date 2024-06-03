@@ -27,11 +27,12 @@ initrandparray(pcb_t pcb[], int len)
 // TODO initialize according to some determined table()
 
 int
-iscomplete(pcb_t* parray, int pid)
+iscomplete(pcb_t* parray, int pid, int t)
 {
     int i = pid - 1;  // index and pid differ by 1
     if (parray[i].cpu_remaining == 0) {
         parray[i].completion = 1;
+        parray[i].completion_time = t + 1;
         return parray[i].completion;
     }
     return parray[i].completion;
@@ -42,7 +43,7 @@ allcomplete(pcb_t* parray, int p_n)
 {
     int allcomplete = 1;
     for (int i = 0; i < p_n; i++) {
-        allcomplete = allcomplete && iscomplete(parray, i+1);
+        allcomplete = allcomplete && parray[i].completion;
     }
     return allcomplete;
 }
@@ -52,6 +53,9 @@ resetp(pcb_t* parray, int p_n)
 {
     for (int i = 0; i < p_n; i++) {
         parray[i].cpu_remaining = parray[i].cpu_burst;
+        parray[i].completion_time = 0;
+        parray[i].turnaround_time = 0;
+        parray[i].waiting_time = 0;
         parray[i].completion = 0;
     }
 }
@@ -61,11 +65,12 @@ displayparray(pcb_t parray[], int p_n)
 {
     int i;
     for (i=0;i<p_n;i++) {
-        printf("pid:%d, priority:%d, burst:%d, remaining: %d, completion:%d\n",
+        printf("pid:%d, priority:%d, burst:%d, remaining: %d, completion_time: %d, completion:%d\n",
                parray[i].pid,
                parray[i].priority,
                parray[i].cpu_burst,
                parray[i].cpu_remaining,
+               parray[i].completion_time,
                parray[i].completion);
     }
 }

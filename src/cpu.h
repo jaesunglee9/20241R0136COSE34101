@@ -11,6 +11,7 @@
 #define RR 6  // round robin
 
 #define MAXRUN 99999
+#define QUANTUM 20
 
 typedef struct cpu_t
 {
@@ -25,5 +26,21 @@ run(cpu_t* cpu, int pid, int t, pcb_t* pcb,int p_n);
 
 void
 fcfs(cpu_t* cpu,pcb_t* parray, int p_n);
+
+void
+npsjf(cpu_t* cpu, pcb_t* parray, int p_n);
+
+void
+psjf(cpu_t* cpu, pcb_t* parray, int p_n);
+
+void
+npps(cpu_t* cpu, pcb_t* parray, int p_n);
+
+void
+pps(cpu_t* cpu, pcb_t* parray, int p_n);
+
+
+void
+rr(cpu_t* cpu, pcb_t* parray, int p_n);
 
 #endif
