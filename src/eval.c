@@ -16,7 +16,7 @@ creategantt(cpu_t* cpu)
 
     int i = 1;  // index for gantt
     int t = 1;  // index for cpu
-    while (cpu->time[t] != -1 || t < MAXRUN) {
+    while (cpu->time[t] != -1 && t < MAXRUN) {
         if (cpu->time[t-1] != cpu->time[t]) {
             gantt->pid[i] = cpu->time[t];
             gantt->start[i] = t;
@@ -24,6 +24,7 @@ creategantt(cpu_t* cpu)
         }
         t++;
     }
+
     // cap gantt
     gantt->pid[i] = cpu->time[t];
     gantt->start[i] = t;
@@ -53,7 +54,7 @@ creategantt(cpu_t* cpu)
 }
 
 void
-eval(pcb_t* parray, int p_n)
+eval(pcb_t* parray, int p_n, float* avgwait, float* avgturn)
 {
     // waiting needs to be defined after turnaround, hence two loops
     for (int i = 0; i < p_n; i++) {
@@ -62,6 +63,24 @@ eval(pcb_t* parray, int p_n)
     for (int i = 0; i < p_n; i++) {
         parray[i].waiting_time = parray[i].turnaround_time - parray[i].cpu_burst;
     }
+
+
+    puts("\t+-----+------------+--------------+----------+--------------+-----------------+");
+    puts("\t| PID | Burst Time | Arrival Time | Priority | Waiting Time | Turnaround Time |");
+    puts("\t+-----+------------+--------------+----------+--------------+-----------------+");
+
+
+	for (int i = 0; i < p_n; i++)
+	{
+		printf("\t| %3d |     %3d    |      %3d     |    %3d   |      %3d     |        %3d      |\n",
+			parray[i].pid, parray[i].cpu_burst, parray[i].arrival, parray[i].priority, parray[i].waiting_time, parray[i].turnaround_time);
+
+		puts("\t+-----+------------+--------------+----------+--------------+-----------------+");
+	}
+
+	puts("\n");
+
+
 
     int total_wait = 0;
     int total_turnaround = 0;
@@ -73,7 +92,12 @@ eval(pcb_t* parray, int p_n)
     float avg_wait = (float) total_wait / p_n;
     float avg_turnaround = (float) total_turnaround / p_n;
 
-    printf("Average waiting: %f, average turnaround: %f\n", avg_wait, avg_turnaround);
+
+
+    *avgwait = avg_wait;
+    *avgturn = avg_turnaround;
+
+    printf("Average waiting: %f, average turnaround: %f\n\n", avg_wait, avg_turnaround);
 
 }
 
@@ -109,12 +133,11 @@ displaygantt (gantt_t* gantt)
         i++;
     }
     printf("\n");
-}
 
-void displayganttchart(gantt_t* gantt)
-{
+    /* DISPLAY GANTT CHART */
+
     // set total dur
-    int i = 0;
+    i = 0;
     while (gantt->pid[i] != -1) {
         i++;
     }
@@ -137,7 +160,14 @@ void displayganttchart(gantt_t* gantt)
     printf("|");
     i = 0;
     while (gantt->pid[i] != -1) {
-        printf("P%-*d", gantt->ratio[i]-1, gantt->pid[i]);  // (2 * gantt->ratio[i])-1
+        if (gantt->pid[i] == 0) {
+            for (int j = 0; j < gantt->ratio[i]; j++) {
+                printf(" ");
+            }
+        } else {
+            printf("P%-*d", gantt->ratio[i]-1, gantt->pid[i]);  // (2 * gantt->ratio[i])-1
+
+        }
         printf("|");
         i++;
     }
@@ -166,6 +196,8 @@ void displayganttchart(gantt_t* gantt)
         printf(" ");
         i++;
     }
-
+    printf("\n\n");
 }
+
+
 

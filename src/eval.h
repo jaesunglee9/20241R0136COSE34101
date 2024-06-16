@@ -3,7 +3,7 @@
 #ifndef __EVAL
 #define __EVAL
 
-#define MAXGANTT 99999
+#define MAXGANTT 999999
 #define CHARTLEN 60
 
 typedef struct gantt_t
@@ -20,13 +20,11 @@ gantt_t*
 creategantt(cpu_t* cpu);
 
 void
-eval(pcb_t* parray, int p_n);
+eval(pcb_t* parray, int p_n, float* avgwait, float* avgturn);
 
 
 void
 displaygantt (gantt_t* gantt);
 
-void
-displayganttchart(gantt_t* gantt);
 
 #endif

@@ -109,6 +109,7 @@ deletenode (ll_t* ll, int pid)
         previous = current;
         current = current->next;
     }
+    return (node_t*)NULL;
 }
 
 node_t*

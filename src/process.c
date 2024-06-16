@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 #include "./process.h"
 
@@ -10,6 +11,8 @@
 void
 initrandparray(pcb_t pcb[], int len)
 {
+    srand(time(NULL));
+
     int i;
     for (i = 0; i < len; i++){
 
@@ -65,9 +68,10 @@ displayparray(pcb_t parray[], int p_n)
 {
     int i;
     for (i=0;i<p_n;i++) {
-        printf("pid:%d, priority:%d, burst:%d, remaining: %d, completion_time: %d, completion:%d\n",
+        printf("pid:%d, priority:%d, arrival: %d, burst:%d, remaining: %d, completion_time: %d, completion:%d\n",
                parray[i].pid,
                parray[i].priority,
+               parray[i].arrival,
                parray[i].cpu_burst,
                parray[i].cpu_remaining,
                parray[i].completion_time,

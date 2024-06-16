@@ -5,36 +5,41 @@
 
 #define ARRIVAL 1
 
+typedef struct pn_t
+{
+    int pid;
+    int priority;
+    int arrival;
+    int cpu_burst;
+    int cpu_remaining;
+    int waiting;
+    int turnaround;
+    int completion;
+    int is_complete;
+    struct pn_t* next;
+} pn_t;
+
 typedef struct pq_t
 {
-    int head;
-    int tail;
-    int size;
-    pcb_t* p_array;
+    pn_t* front;
+    pn_t* rear;
 } pq_t;
 
 
 
+pn_t*
+newprocess(int pid, int arrival, int cpu_burst);
+
 pq_t*
-createpq();
+createq();
 
 void
-deletepq(pq_t* pq);
+enqueue(pq_t* q, pn_t* p);
+
+pn_t*
+dequeue(pq_t* q);
 
 int
-isfull(pq_t* pq);
+isqempty(pq_t* q);
 
-int
-isempty(pq_t* pq);
 
-int
-enqueue(pq_t* pq, pcb_t* pcb);
-
-pcb_t
-dequeue(pq_t* pq);
-
-pcb_t*
-top(pq_t* pq);
-
-void
-displaypq(pq_t* pq);

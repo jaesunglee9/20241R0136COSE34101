@@ -4,81 +4,55 @@
 #include "./process.h"
 #include "./queue.h"
 
-
+pn_t*
+newprocess(int pid, int arrival, int cpu_burst)
+{
+    pn_t* temp = (pn_t*) calloc (1, sizeof(pn_t));
+    temp->pid = pid;
+    temp->arrival = arrival;
+    temp->cpu_burst = cpu_burst;
+    temp->cpu_remaining = cpu_burst;
+    temp->next = NULL;
+    return temp;
+}
 
 pq_t*
-createpq()
+createq()
 {
-    pq_t* pq = (pq_t*)malloc(sizeof(pq_t));
-    pq->head = 0;
-    pq->tail = -1;
-    pq->size = 0;
-    pq->p_array = (pcb_t*)malloc(MAXQUEUESIZE * sizeof(pcb_t));
-
-    return pq;
+    pq_t* q = (pq_t*) calloc (1, sizeof(pq_t));
+    q->front = q->rear = NULL;
+    return q;
 }
 
 void
-deletepq(pq_t* pq)
-{
-    free(pq->p_array);
-    free(pq);
-}
-
-int
-isfull(pq_t* pq)
-{
-    return (pq->size == MAXQUEUESIZE);
-}
-
-int
-isempty(pq_t* pq)
-{
-    return (pq->size == 0);
-}
-
-int
-enqueue(pq_t* pq, pcb_t* pcb)
-{
-    if (isfull(pq)) {
-        return -1;
-    }
-    pq->tail = (pq->tail+1)%MAXQUEUESIZE;
-    pq->p_array[pq->tail] = *pcb;
-    pq->size++;
-    return 0;
-}
-
-pcb_t
-dequeue(pq_t* pq)
-{
-    pcb_t pcb = pq->p_array[pq->head];
-    pq->head = (pq->head+1)%MAXQUEUESIZE;
-    pq->size--;
-    return pcb;
-}
-
-pcb_t*
-top(pq_t* pq)
-{
-    return &(pq->p_array[pq->tail]);
-}
-
-
-void
-displaypq(pq_t* pq)
-{
-    if (isempty(pq)) {
-        printf("is empty\n");
+enqueue(pq_t* q, pn_t* p) {
+    if (q->rear == NULL) {
+        q->front = q->rear = p;
         return;
     }
 
-    int i;
-    for (i=0; i<pq->size; i++) {
-        int index = (pq->head+i)%MAXQUEUESIZE;
-        printf("Process ID: %d, Priority: %d\n",
-               pq->p_array[index].pid,
-               pq->p_array[index].priority);
-    }
+    q->rear->next = p;
+    q->rear = p;
 }
+
+pn_t*
+dequeue(pq_t* q)
+{
+    if (q->front == NULL) {
+        return NULL;
+    }
+    pn_t* temp = q->front;
+    q->front = q->front->next;
+    if (q->front == NULL) {
+        q->rear = NULL;
+    }
+    return temp;
+}
+
+int
+isqempty(pq_t* q)
+{
+    return q->front == NULL;
+}
+
 

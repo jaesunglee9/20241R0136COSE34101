@@ -10,7 +10,7 @@
 #define PPS 5  // preemptive priority scheduling
 #define RR 6  // round robin
 
-#define MAXRUN 99999
+#define MAXRUN 999999
 #define QUANTUM 20
 
 typedef struct cpu_t

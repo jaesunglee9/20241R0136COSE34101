@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "./cpu.h"
+#include "./queue.h"
 
 void
 simulate(cpu_t* cpu, int algo, pcb_t* pcb, int p_n)
@@ -39,19 +40,6 @@ run(cpu_t* cpu, int pid, int t, pcb_t* pcb, int p_n)
     }
 }
 
-
-/* PSEUDOCODE: FCFS
- *
- * push process into queue
- * sort queue by arrival
- *
- * Init timestep = 0
- * while queue is not empty
- *     while top(queue) is not done
- *         run(top(queue))
- *         t += 1
- *     dequeue(queue)
- */
 void
 fcfs(cpu_t* cpu, pcb_t* parray, int p_n)
 {
@@ -127,10 +115,6 @@ npsjf(cpu_t* cpu, pcb_t* parray, int p_n)
             pid = 0;
         }
         t++;
-
-
-
-
 
     }
     run(cpu, -1, t, parray, p_n);  // cap cpu
@@ -267,48 +251,65 @@ pps(cpu_t* cpu, pcb_t* parray, int p_n)
 void
 rr(cpu_t* cpu, pcb_t* parray, int p_n)
 {
+    pn_t* p[p_n];
+    for (int i =0; i < p_n; i++) {
+        p[i] = newprocess(parray[i].pid, parray[i].arrival, parray[i].cpu_burst);
+    }
 
-    ll_t* waitq = createll();
-    ll_t* readyq = createll();
+    pq_t* q = createq();
+    int t = 0, time = 0, completed = 0;
+    int* gantt = (int*) calloc (MAXRUN, sizeof(int));
+    int gantt_index = 0;
+
+    while (completed <= p_n + 1) {
+        for (int i = 0; i < p_n; i++) {
+            if (p[i]->arrival <= time && p[i]->cpu_remaining > 0 && p[i]->arrival != -1) {
+                enqueue(q, p[i]);
+                p[i] ->arrival = -1;
+            }
+        }
+
+        if (!isqempty(q)) {
+            pn_t* current = dequeue(q);
+            if (current->cpu_remaining > QUANTUM) {
+                for (int i = 0; i < QUANTUM; i++) {
+                    run(cpu, current->pid, t, parray, p_n);
+                    t++;
+                }
+                time += QUANTUM;
+                current->cpu_remaining -= QUANTUM;
+                gantt[gantt_index++] = current->pid;
+                // if (current->cpu_remaining <= 0) {
+                //     parray[current->pid-1].completion_time = time;
+                //     parray[current->pid-1].completion = 1;
+                //     completed++;
+                // }
+                enqueue(q, current);
+            } else {
+                for (int i = 0; i < current->cpu_remaining; i++) {
+                    run(cpu, current->pid, t, parray, p_n);
+                    t++;
+                }
+                time += current->cpu_remaining;
+                gantt[gantt_index++] = current->pid;
+                current->cpu_remaining = 0;
+                parray[current->pid-1].completion_time = time;
+                parray[current->pid-1].completion = 1;
+                completed++;
+            }
+        } else {
+            gantt[gantt_index++] = -1;
+            time++;
+            run(cpu, 0, t, parray, p_n);
+            t++;
+        }
+    }
+    run(cpu, -1, t, parray, p_n);
 
     for (int i = 0; i < p_n; i++) {
-        insertpcb(waitq, parray, i+1);
+        free(p[i]);
     }
-
-    int pid = 0;
-    int runtime = 0;
-    int t = 0;
-    node_t* current = NULL;
-
-    while (!allcomplete(parray, p_n)) {
-        //  t check for arrival
-        for (int i = 0; i < p_n; i++) {
-            if (parray[i].arrival == t) {
-                movenodetail(waitq, readyq, parray[i].pid);
-            }
-        }
-
-        if (isempty(readyq)) {  // if ready q empty
-            run(cpu, 0, t, parray, p_n);
-        } else {
-            if (pid == 0 || runtime == 0) {  // If done or first
-                current = deletenodehead(readyq);
-                pid = current->pcb->pid;
-                runtime = (current->pcb->cpu_remaining < QUANTUM) ? current->pcb->cpu_remaining : QUANTUM;
-            }
-
-            run(cpu, pid, t, parray, p_n);
-            runtime -= 1;
-
-            if (runtime == 0) {
-                if (!iscomplete(parray, pid, t)) {
-                    insertnodetail(readyq, current);
-                }
-                pid = 0;
-            }
-        }
-        t++;
-    }
+    free(gantt);
 }
 
 
